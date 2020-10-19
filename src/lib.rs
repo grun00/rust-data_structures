@@ -62,19 +62,59 @@ pub fn merge_sort<T: PartialOrd + Debug>(mut v: Vec<T>) -> Vec<T> {
     }
 }
 
+pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]){
+    if v.len() <= 1{
+        return;
+    }
+
+    let p = pivot(v);
+    println!("{:?}", v);
+
+    let (a, b) = v.split_at_mut(p);
+    quick_sort(a);
+    quick_sort(&mut b[1..]);
+}
+
+pub fn pivot<T: PartialOrd>(v: &mut [T]) -> usize {
+    let mut p = 0;
+    for i in 1..v.len() {
+        if v[i] < v[p]{
+            v.swap(p, p + 1);
+            p+=1;
+        }
+    }
+    p
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
-    fn bubble_sort_array() {
+    fn bubble_sort_test() {
         let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
         buble_sort(&mut v);
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
     #[test]
-    fn merge_sort_array() {
+    fn merge_sort_test() {
         let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
         v = merge_sort(v);
+        assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+    #[test]
+    fn test_pivot() {
+        let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1];
+        let p = pivot(&mut v);
+
+        for i in 0..v.len() {
+            assert!(( v[i] < v[p] ) == ( i < p ));
+        }
+    }
+    #[test]
+    fn quick_sort_test() {
+        let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+        quick_sort(&mut v);
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
 }
