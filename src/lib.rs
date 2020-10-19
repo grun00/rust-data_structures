@@ -19,7 +19,6 @@ pub fn buble_sort<T: PartialOrd>(v: &mut [T]) {
 // O(n*ln(n))
 pub fn merge_sort<T: PartialOrd + Debug>(mut v: Vec<T>) -> Vec<T> {
 
-    println!("MS:{:?}", v);
     if v.len() <= 1 {
         return v;
     }
