@@ -91,14 +91,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn bubble_sort_test() {
+    fn worst_case_bubble_sort_test() {
         let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
         buble_sort(&mut v);
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
     #[test]
-    fn merge_sort_test() {
+    fn best_case_bubble_sort_test() {
+        let mut v = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        buble_sort(&mut v);
+        assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+    #[test]
+    fn worst_case_merge_sort_test() {
         let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+        v = merge_sort(v);
+        assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+    #[test]
+    fn best_case_merge_sort_test() {
+        let mut v = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         v = merge_sort(v);
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
@@ -112,8 +124,14 @@ mod tests {
         }
     }
     #[test]
-    fn quick_sort_test() {
+    fn worst_case_quick_sort_test() {
         let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+        quick_sort(&mut v);
+        assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+    #[test]
+    fn best_case_quick_sort_test() {
+        let mut v = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         quick_sort(&mut v);
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
