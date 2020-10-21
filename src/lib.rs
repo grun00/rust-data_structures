@@ -1,6 +1,5 @@
-use std::fmt::Debug;
 use rand::Rng;
-
+use std::fmt::Debug;
 
 // O(n^2)
 pub fn buble_sort<T: PartialOrd>(v: &mut [T]) {
@@ -20,7 +19,6 @@ pub fn buble_sort<T: PartialOrd>(v: &mut [T]) {
 
 // O(n*ln(n))
 pub fn merge_sort<T: PartialOrd + Debug>(mut v: Vec<T>) -> Vec<T> {
-
     if v.len() <= 1 {
         return v;
     }
@@ -64,8 +62,8 @@ pub fn merge_sort<T: PartialOrd + Debug>(mut v: Vec<T>) -> Vec<T> {
     }
 }
 
-pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]){
-    if v.len() <= 1{
+pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]) {
+    if v.len() <= 1 {
         return;
     }
     let p = pivot(v);
@@ -74,7 +72,35 @@ pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]){
     quick_sort(&mut b[1..]);
 }
 
-pub fn pivot<T: PartialOrd + Debug>(v: &mut [T]) -> usize {
+struct RawSend<T>(*mut [T]);
+unsafe impl<T> Send for RawSend<T> {}
+
+pub fn threaded_quick_sort<T: 'static + PartialOrd + Send>(v: &mut [T]) {
+    if v.len() <= 1 {
+        return;
+    }
+
+    let p = pivot(v);
+
+    let (a, b) = v.split_at_mut(p);
+
+
+    let raw_a: *mut [T] = a as *mut [T];
+    let raw_s = RawSend(raw_a);
+
+    unsafe {
+        let handle = std::thread::spawn(move || {
+            threaded_quick_sort(&mut *raw_s.0);
+        });
+
+        threaded_quick_sort(&mut b[1..]);
+
+        handle.join().ok();
+    }
+}
+
+
+pub fn pivot<T: PartialOrd>(v: &mut [T]) -> usize {
     let mut rng = rand::thread_rng();
     let mut p = rng.gen_range(0, v.len());
     v.swap(0, p);
@@ -84,7 +110,7 @@ pub fn pivot<T: PartialOrd + Debug>(v: &mut [T]) -> usize {
         if v[i] < v[p] {
             v.swap(p + 1, i);
             v.swap(p, p + 1);
-            p+=1;
+            p += 1;
         }
     }
     p
@@ -99,7 +125,6 @@ mod tests {
         let mut rng = rand::thread_rng();
         let mut v: Vec<u64> = (0..1000).map(|_| rng.gen_range(0, 100)).collect();
         buble_sort(&mut v);
-
         for i in 0..v.len() - 1 {
             assert!(v[i] <= v[i + 1]);
         }
@@ -131,7 +156,7 @@ mod tests {
         let p = pivot(&mut v);
 
         for i in 0..v.len() {
-            assert!(( v[i] < v[p] ) == ( i < p ));
+            assert!((v[i] < v[p]) == (i < p));
         }
     }
     #[test]
@@ -148,5 +173,14 @@ mod tests {
         let mut v = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         quick_sort(&mut v);
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+    #[test]
+    fn avg_case_threaded_quick_sort_test() {
+        let mut rng = rand::thread_rng();
+        let mut v: Vec<u64> = (0..1000).map(|_| rng.gen_range(0, 100)).collect();
+        threaded_quick_sort(&mut v);
+        for i in 0..v.len() - 1 {
+            assert!(v[i] <= v[i + 1]);
+        }
     }
 }
