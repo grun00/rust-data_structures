@@ -1,4 +1,6 @@
 use std::fmt::Debug;
+use rand::Rng;
+
 
 // O(n^2)
 pub fn buble_sort<T: PartialOrd>(v: &mut [T]) {
@@ -66,19 +68,21 @@ pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]){
     if v.len() <= 1{
         return;
     }
-
     let p = pivot(v);
-    println!("{:?}", v);
-
     let (a, b) = v.split_at_mut(p);
     quick_sort(a);
     quick_sort(&mut b[1..]);
 }
 
-pub fn pivot<T: PartialOrd>(v: &mut [T]) -> usize {
-    let mut p = 0;
+pub fn pivot<T: PartialOrd + Debug>(v: &mut [T]) -> usize {
+    let mut rng = rand::thread_rng();
+    let mut p = rng.gen_range(0, v.len());
+    v.swap(0, p);
+    p = 0;
+
     for i in 1..v.len() {
-        if v[i] < v[p]{
+        if v[i] < v[p] {
+            v.swap(p + 1, i);
             v.swap(p, p + 1);
             p+=1;
         }
@@ -91,10 +95,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn worst_case_bubble_sort_test() {
-        let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+    fn avg_case_bubble_sort_test() {
+        let mut rng = rand::thread_rng();
+        let mut v: Vec<u64> = (0..1000).map(|_| rng.gen_range(0, 100)).collect();
         buble_sort(&mut v);
-        assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+        for i in 0..v.len() - 1 {
+            assert!(v[i] <= v[i + 1]);
+        }
     }
     #[test]
     fn best_case_bubble_sort_test() {
@@ -103,10 +111,13 @@ mod tests {
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
     #[test]
-    fn worst_case_merge_sort_test() {
-        let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+    fn avg_case_merge_sort_test() {
+        let mut rng = rand::thread_rng();
+        let mut v: Vec<u64> = (0..1000).map(|_| rng.gen_range(0, 100)).collect();
         v = merge_sort(v);
-        assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        for i in 0..v.len() - 1 {
+            assert!(v[i] <= v[i + 1]);
+        }
     }
     #[test]
     fn best_case_merge_sort_test() {
@@ -124,10 +135,13 @@ mod tests {
         }
     }
     #[test]
-    fn worst_case_quick_sort_test() {
-        let mut v = vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+    fn avg_case_quick_sort_test() {
+        let mut rng = rand::thread_rng();
+        let mut v: Vec<u64> = (0..1000).map(|_| rng.gen_range(0, 100)).collect();
         quick_sort(&mut v);
-        assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        for i in 0..v.len() - 1 {
+            assert!(v[i] <= v[i + 1]);
+        }
     }
     #[test]
     fn best_case_quick_sort_test() {
