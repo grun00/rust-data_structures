@@ -99,6 +99,17 @@ pub fn threaded_quick_sort<T: 'static + PartialOrd + Send>(v: &mut [T]) {
     }
 }
 
+pub fn rayon_quick_sort<T: Send + PartialOrd>(v: &mut [T]){
+    if v.len() <=1 {
+        return;
+    }
+    let p = pivot(v);
+
+    let (a, b) = v.split_at_mut(p);
+
+    rayon::join(|| rayon_quick_sort(a), || rayon_quick_sort(&mut b[1..]));
+}
+
 
 pub fn pivot<T: PartialOrd>(v: &mut [T]) -> usize {
     let mut rng = rand::thread_rng();
@@ -175,10 +186,19 @@ mod tests {
         assert_eq!(v, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
     #[test]
-    fn avg_case_threaded_quick_sort_test() {
+    fn avg_case_unsafe_threaded_quick_sort_test() {
         let mut rng = rand::thread_rng();
         let mut v: Vec<u64> = (0..1000).map(|_| rng.gen_range(0, 100)).collect();
         threaded_quick_sort(&mut v);
+        for i in 0..v.len() - 1 {
+            assert!(v[i] <= v[i + 1]);
+        }
+    }
+    #[test]
+    fn avg_case_rayon_threaded_quick_sort_test() {
+        let mut rng = rand::thread_rng();
+        let mut v: Vec<u64> = (0..1000).map(|_| rng.gen_range(0, 100)).collect();
+        rayon_quick_sort(&mut v);
         for i in 0..v.len() - 1 {
             assert!(v[i] <= v[i + 1]);
         }
