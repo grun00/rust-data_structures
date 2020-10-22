@@ -8,7 +8,7 @@ fn main(){
     let vec_size = 100_000;
     let base_vec: Vec<u64> = (0..vec_size).map(|_| rng.gen_range(0, 10000)).collect();
     let mut bubble_vec = base_vec.clone();
-    let mut merge_vec = base_vec.clone();
+    let merge_vec = base_vec.clone();
     let mut quick_vec = base_vec.clone();
     let mut threaded_quick_vec = base_vec.clone();
 
