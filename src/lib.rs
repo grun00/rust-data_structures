@@ -1,5 +1,4 @@
 use rand::Rng;
-use std::fmt::Debug;
 
 // O(n^2)
 pub fn buble_sort<T: PartialOrd>(v: &mut [T]) {
@@ -18,7 +17,7 @@ pub fn buble_sort<T: PartialOrd>(v: &mut [T]) {
 }
 
 // O(n*ln(n))
-pub fn merge_sort<T: PartialOrd + Debug>(mut v: Vec<T>) -> Vec<T> {
+pub fn merge_sort<T: PartialOrd>(mut v: Vec<T>) -> Vec<T> {
     if v.len() <= 1 {
         return v;
     }
@@ -62,7 +61,7 @@ pub fn merge_sort<T: PartialOrd + Debug>(mut v: Vec<T>) -> Vec<T> {
     }
 }
 
-pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]) {
+pub fn quick_sort<T: PartialOrd>(v: &mut [T]) {
     if v.len() <= 1 {
         return;
     }
@@ -73,7 +72,6 @@ pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]) {
 }
 #[allow(dead_code)]
 struct RawSend<T>(*mut [T]);
-#[allow(dead_code)]
 unsafe impl<T> Send for RawSend<T> {}
 
 #[allow(dead_code)]
