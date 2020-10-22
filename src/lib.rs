@@ -71,10 +71,12 @@ pub fn quick_sort<T: PartialOrd + Debug>(v: &mut [T]) {
     quick_sort(a);
     quick_sort(&mut b[1..]);
 }
-
+#[allow(dead_code)]
 struct RawSend<T>(*mut [T]);
+#[allow(dead_code)]
 unsafe impl<T> Send for RawSend<T> {}
 
+#[allow(dead_code)]
 pub fn threaded_quick_sort<T: 'static + PartialOrd + Send>(v: &mut [T]) {
     if v.len() <= 1 {
         return;
