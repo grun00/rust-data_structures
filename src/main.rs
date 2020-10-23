@@ -1,6 +1,6 @@
 use rand::Rng;
 use std::time::Instant;
-mod lib;
+mod sorting;
 
 fn main(){
     let mut rng = rand::thread_rng();
@@ -15,7 +15,7 @@ fn main(){
     println!("=================+ Staring benchmark");
 
     let start = Instant::now();
-    lib::buble_sort(&mut bubble_vec);
+    sorting::buble_sort(&mut bubble_vec);
     let duration = start.elapsed();
 
     println!("Bubble Sort time for {} elements: {:?}", vec_size, duration);
@@ -23,7 +23,7 @@ fn main(){
     println!("---------------------------");
 
     let start = Instant::now();
-    lib::merge_sort(merge_vec);
+    sorting::merge_sort(merge_vec);
     let duration = start.elapsed();
 
     println!("Merge Sort time for {} elements: {:?}", vec_size, duration);
@@ -31,7 +31,7 @@ fn main(){
     println!("---------------------------");
 
     let start = Instant::now();
-    lib::quick_sort(&mut quick_vec);
+    sorting::quick_sort(&mut quick_vec);
     let duration = start.elapsed();
 
     println!("Quick Sort time for {} elements: {:?}", vec_size, duration);
@@ -39,7 +39,7 @@ fn main(){
     println!("---------------------------");
 
     let start = Instant::now();
-    lib::rayon_quick_sort(&mut threaded_quick_vec);
+    sorting::rayon_quick_sort(&mut threaded_quick_vec);
     let duration = start.elapsed();
 
     println!("Multi Thread Quick Sort time for {} elements: {:?}", vec_size, duration);
