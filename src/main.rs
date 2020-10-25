@@ -1,6 +1,7 @@
 use rand::Rng;
 use std::time::Instant;
 mod sorting;
+mod linked_lists;
 
 fn main(){
     let mut rng = rand::thread_rng();
