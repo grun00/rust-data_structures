@@ -1,5 +1,6 @@
 use rand::Rng;
 use std::time::Instant;
+mod cons;
 mod sorting;
 mod linked_lists;
 
