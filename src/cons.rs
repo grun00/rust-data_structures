@@ -1,17 +1,14 @@
 use std::mem;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 pub struct List {
     head: Link,
 }
-#[allow(dead_code)]
 #[derive(Debug)]
 enum Link {
     Empty,
     More(Box<Node>),
 }
-#[allow(dead_code)]
 #[derive(Debug)]
 struct Node {
     data: u32,
@@ -74,7 +71,6 @@ impl Drop for List {
 
 #[cfg(test)]
 mod tests {
-    #[allow(unused_imports)]
     use super::*;
 
     #[test]
