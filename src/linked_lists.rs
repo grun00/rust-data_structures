@@ -34,19 +34,21 @@ impl<T> List<T> {
     }
 
     pub fn peek(&self) -> Option<&T> {
-        self.head.as_ref().map(|node| {
-            &node.data
-        })
+        self.head.as_ref().map(|node| &node.data)
     }
 
     pub fn peek_mut(&mut self) -> Option<&mut T> {
-        self.head.as_mut().map(|node| {
-            &mut node.data
-        })
+        self.head.as_mut().map(|node| &mut node.data)
     }
 
     pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
+    }
+
+    pub fn iter<'a>(&'a self) -> Iter<'a, T> {
+        Iter {
+            next: self.head.as_ref().map(|node| &**node),
+        }
     }
 }
 
@@ -59,14 +61,29 @@ impl<T> Drop for List<T> {
     }
 }
 
-#[allow(dead_code)]
 pub struct IntoIter<T>(List<T>);
 
-impl<T> Iterator for IntoIter<T>{
+impl<T> Iterator for IntoIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.0.pop()
+    }
+}
+
+#[allow(dead_code)]
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
+}
+
+impl<'a, T> Iterator for Iter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next.map(|node| {
+            self.next = node.next.as_ref().map(|node| &**node);
+            &node.data
+        })
     }
 }
 
@@ -81,8 +98,10 @@ mod tests {
 
         ll.push(10);
         match &ll.head {
-            Link::None => { panic!(""); },
-            Link::Some(node) => { assert_eq!(10, node.data) }
+            Link::None => {
+                panic!("");
+            }
+            Link::Some(node) => assert_eq!(10, node.data),
         }
     }
     #[test]
@@ -112,9 +131,7 @@ mod tests {
         ll.push(1);
         assert_eq!(ll.peek_mut(), Some(&mut 1));
 
-        ll.peek_mut().map(|value| {
-            *value = 42
-        });
+        ll.peek_mut().map(|value| *value = 42);
 
         assert_eq!(ll.peek_mut(), Some(&mut 42));
     }
@@ -123,11 +140,25 @@ mod tests {
     #[test]
     fn iterator() {
         let mut list = List::new();
-        list.push(1); list.push(2); list.push(3);
+        list.push(1);
+        list.push(2);
+        list.push(3);
         let mut iter = list.into_iter();
         assert_eq!(iter.next(), Some(3));
         assert_eq!(iter.next(), Some(2));
         assert_eq!(iter.next(), Some(1));
         assert_eq!(iter.next(), None);
+    }
+    #[test]
+    fn iter() {
+        let mut list = List::new();
+        list.push(1);
+        list.push(2);
+        list.push(3);
+
+        let mut iter = list.iter();
+        assert_eq!(iter.next(), Some(&3));
+        assert_eq!(iter.next(), Some(&2));
+        assert_eq!(iter.next(), Some(&1));
     }
 }
