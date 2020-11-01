@@ -41,6 +41,29 @@ impl<T> List<T> {
     }
 }
 
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
+}
+
+impl<T> List<T> {
+    pub fn iter(&self) -> Iter<'_, T> {
+        Iter {
+            next: self.head.as_ref().map(|node| &**node),
+        }
+    }
+}
+
+impl<'a, T> Iterator for Iter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next.map(|node| {
+            self.next = node.next.as_ref().map(|node| &**node);
+            &node.data
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
