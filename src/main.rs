@@ -1,10 +1,11 @@
 use rand::Rng;
 use std::time::Instant;
 mod cons;
-mod sorting;
+mod generic_cons;
 mod linked_lists;
+mod sorting;
 
-fn main(){
+fn main() {
     let mut rng = rand::thread_rng();
 
     let vec_size = 100_000;
@@ -44,7 +45,10 @@ fn main(){
     sorting::rayon_quick_sort(&mut threaded_quick_vec);
     let duration = start.elapsed();
 
-    println!("Multi Thread Quick Sort time for {} elements: {:?}", vec_size, duration);
+    println!(
+        "Multi Thread Quick Sort time for {} elements: {:?}",
+        vec_size, duration
+    );
 
     println!("=================+ Ending benchmark");
 }
