@@ -1,6 +1,5 @@
 use std::rc::Rc;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 pub struct List<T> {
     head: Link<T>,
@@ -8,7 +7,6 @@ pub struct List<T> {
 
 type Link<T> = Option<Rc<Node<T>>>;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 struct Node<T> {
     data: T,
@@ -104,5 +102,14 @@ mod tests {
         assert_eq!(ll.head(), Some(&1));
         ll = ll.tail();
         assert_eq!(ll.head(), None);
+    }
+    #[test]
+    fn iteration() {
+        let list = List::new().append(1).append(2).append(3);
+
+        let mut iter = list.iter();
+        assert_eq!(iter.next(), Some(&3));
+        assert_eq!(iter.next(), Some(&2));
+        assert_eq!(iter.next(), Some(&1));
     }
 }
