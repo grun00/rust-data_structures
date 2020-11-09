@@ -1,6 +1,8 @@
 use rand::Rng;
 use std::time::Instant;
+mod binary_tree;
 mod cons;
+mod double_linked_lists;
 mod generic_cons;
 mod linked_lists;
 mod sorting;
